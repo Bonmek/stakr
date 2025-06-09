@@ -18,7 +18,7 @@ edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
 # Override = { local = "../conflicting/version", override = true }
 
 [addresses]
-tid_game = "0x18a4c45a96c15d62b82b341f18738125bf875fee86057d88589a183700601a1c"
+tid_game = "0x0"
 
 # Named addresses will be accessible in Move as `@name`. They're also exported:
 # for example, `std = "0x1"` is exported by the Standard Library.
@@ -33,4 +33,3 @@ tid_game = "0x18a4c45a96c15d62b82b341f18738125bf875fee86057d88589a183700601a1c"
 # The dev-addresses section allows overwriting named addresses for the `--test`
 # and `--dev` modes.
 # alice = "0xB0B"
-
