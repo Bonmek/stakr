@@ -57,8 +57,22 @@ module tid_game::escrow {
     public fun challenger_a_cancle_escrow(escrow: &mut Escrow, ctx: &mut TxContext) {
         assert!(escrow.challenger_a == tx_context::sender(ctx), 0);
         assert!(!is_some(&escrow.challenger_b),1);
-        let refund_wager = extract(&mut escrow.wager);
-        transfer::public_transfer(refund_wager, escrow.challenger_a);
+        let wager_refund = extract(&mut escrow.wager);
+        transfer::public_transfer(wager_refund, escrow.challenger_a);
+    }
+
+    public fun select_Winner(
+        escrow: &mut Escrow,
+        platform: &  Tid_game,
+        owner_cap: & Owner_cap,
+        winner: address
+    ) {
+        assert!(platform.owner == object::id(owner_cap), 0);
+        assert!(is_some(&escrow.challenger_b),1);
+        assert!(winner == escrow.challenger_a || winner == borrow(& escrow.challenger_b), 2);
+
+        let wager_reward = extract(&mut escrow.wager);
+        transfer::public_transfer(wager_reward, winner);
     }
 
 }
