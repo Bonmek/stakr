@@ -1,6 +1,6 @@
 module tid_game::escrow {
 
-    use sui::coin::{Coin, join, value};
+    use sui::coin::{Coin, join, value, split};
     use sui::sui::SUI;
     use std::option::{none, some, is_some, extract, borrow};
 
@@ -61,7 +61,7 @@ module tid_game::escrow {
         transfer::public_transfer(wager_refund, escrow.challenger_a);
     }
 
-    public fun select_Winner(
+    public fun select_winner(
         escrow: &mut Escrow,
         platform: &  Tid_game,
         owner_cap: & Owner_cap,
@@ -73,6 +73,22 @@ module tid_game::escrow {
 
         let wager_reward = extract(&mut escrow.wager);
         transfer::public_transfer(wager_reward, winner);
+    }
+
+    public fun cancel_match(
+        escrow: &mut Escrow,
+        platform: &  Tid_game,
+        owner_cap: & Owner_cap, 
+        ctx: &mut TxContext
+    ) {
+        assert!(platform.owner == object::id(owner_cap), 0);
+        assert!(is_some(&escrow.challenger_b),1);
+
+        let mut wager_refund = extract(&mut escrow.wager);
+        let wager_refund_value = value(&wager_refund)/2 ;
+        let wager_refund_challenger_b = split(&mut wager_refund, wager_refund_value, ctx);
+        transfer::public_transfer(wager_refund, escrow.challenger_a);
+        transfer::public_transfer(wager_refund_challenger_b, extract(&mut escrow.challenger_b));
     }
 
 }
